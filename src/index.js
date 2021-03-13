@@ -22,7 +22,11 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request
+
+  if (user.todos.length >= 10 && !user.pro) return response.status(403).json({ error: 'You cannot create a new todo! '})
+
+  next()
 }
 
 function checksTodoExists(request, response, next) {
@@ -39,7 +43,7 @@ app.post('/users', (request, response) => {
   const usernameAlreadyExists = users.some((user) => user.username === username);
 
   if (usernameAlreadyExists) {
-    return response.status(400).json({ error: 'Username already exists' });
+    return response.status(403).json({ error: 'Username already exists' });
   }
 
   const user = {
